@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Wildlife Monitoring Dashboard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #eef5f5;
+      text-align: center;
+      padding: 40px;
+    }
+    h1 {
+      color: #2a5d66;
+    }
+    input[type="file"] {
+      margin-top: 20px;
+    }
+    button {
+      padding: 10px 20px;
+      margin-top: 15px;
+      background-color: #2a5d66;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    #results {
+      margin-top: 30px;
+      font-size: 18px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1> Wildlife Monitoring Dashboard</h1>
+
+  <input type="file" id="videoInput" accept="video/*"><br>
+  <button onclick="uploadVideo()">Upload & Analyze</button>
+
+  <div id="results"></div>
+
+  <script>
+    async function uploadVideo() {
+      const input = document.getElementById('videoInput');
+      const file = input.files[0];
+
+      if (!file) {
+        alert('Please select a video file first.');
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append('file', file);
+
+      document.getElementById('results').innerHTML = ' Analyzing video...';
+
+      try {
+        const response = await fetch('http://localhost:10000/analyze', {
+          method: 'POST',
+          body: formData
+        });
+
+        const result = await response.json();
+
+        if (result.species_detected && result.species_detected.length > 0) {
+          const list = result.species_detected.map(s => `<li>${s}</li>`).join('');
+          document.getElementById('results').innerHTML = `
+            <h3>✅ Detected Species:</h3>
+            <ul>${list}</ul>
+          `;
+        } else {
+          document.getElementById('results').innerHTML = '❌ No species detected.';
+        }
+      } catch (error) {
+        console.error(error);
+        document.getElementById('results').innerHTML = '⚠️ Error analyzing video.';
+      }
+    }
+  </script>
+
+</body>
+</html>
