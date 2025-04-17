@@ -8,7 +8,7 @@ app = Flask(__name__)
 
 # 🔽 Step 1: Download the model if it's not available
 def download_model():
-    url = "https://drive.google.com/uc?export=download&id=12CxkuZ98niV-KKVsEgl5LSavtTrwlkJZ"  # Replace with your Google Drive ID
+    url = "https://drive.google.com/uc?export=download&id=12CxkuZ98niV-KKVsEgl5LSavtTrwlkJZ"  # Replace with Google Drive ID
     model_path = "yolov8.pt"
     if not os.path.exists(model_path):
         print("🔽 Downloading YOLOv8 model...")
